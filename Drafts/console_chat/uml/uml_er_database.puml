@@ -1,49 +1,53 @@
 @startuml
-' ER-диаграмма базы данных (единая БД)
+' ER-диаграмма базы данных (один PostgreSQL, логические схемы)
 hide circle
 skinparam linetype ortho
-title ER-диаграмма (PostgreSQL, единая БД)
+title ER-диаграмма (PostgreSQL: схемы users и chat)
 
-entity "users" as u {
-  * id : uuid PK
-  --
-  username : varchar(50) UNIQUE
-  password_hash : varchar(128)
-  display_name : varchar(100)
-  avatar_url : varchar(255)
-  about : text
-  created_at : timestamp
+package "Схема users (владелец: UserService)" {
+  entity "users" as u {
+    * id : uuid PK
+    --
+    username : varchar(50) UNIQUE
+    password_hash : varchar(128)
+    display_name : varchar(100)
+    avatar_url : varchar(255)
+    about : text
+    created_at : timestamp
+  }
 }
 
-entity "chats" as c {
-  * id : uuid PK
-  --
-  name : varchar(100)
-  owner_id : uuid FK
-  created_at : timestamp
-}
+package "Схема chat (владелец: ChatService)" {
+  entity "chats" as c {
+    * id : uuid PK
+    --
+    name : varchar(100)
+    owner_id : uuid FK
+    created_at : timestamp
+  }
 
-entity "chat_members" as cm {
-  * chat_id : uuid PK,FK
-  * user_id : uuid PK,FK
-  --
-  role : varchar(10)
-  joined_at : timestamp
-}
+  entity "chat_members" as cm {
+    * chat_id : uuid PK,FK
+    * user_id : uuid PK,FK
+    --
+    role : varchar(10)
+    joined_at : timestamp
+  }
 
-entity "messages" as m {
-  * id : uuid PK
-  --
-  chat_id : uuid FK
-  author_id : uuid FK
-  content : text
-  sent_at : timestamp
+  entity "messages" as m {
+    * id : uuid PK
+    --
+    chat_id : uuid FK
+    author_id : uuid FK
+    content : text
+    sent_at : timestamp
+  }
 }
 
 u ||--o{ cm : "участвует"
 c ||--o{ cm : "содержит"
 c ||--o{ m : "содержит"
 u ||--o{ m : "отправил"
-c }o--|| u : "владелец"
+c }o--|| u : "владелец (FK через схему)"
 
 @enduml
