@@ -1,0 +1,88 @@
+@startuml
+' Прикладной слой и инфраструктура (Application + Infrastructure)
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam linetype ortho
+title Прикладной слой (Application) и Инфраструктура (Infrastructure)
+
+package "Application" {
+  class "IChatRepository" as IChatRepo {
+    + GetById(id) : Chat?
+    + Add(chat) : void
+    + Save(chat) : void
+    + Remove(id) : void
+  }
+  class "IUserRepository" as IUserRepo {
+    + GetById(id) : User?
+    + GetByUsername(name) : User?
+    + Add(user) : void
+  }
+  class "IUnitOfWork" as IUnitOfWork {
+    + Chats : IChatRepository
+    + Users : IUserRepository
+    + Commit() : void
+  }
+  class "IUserServiceClient" as IUserClient {
+    + GetUserProfile(userId) : UserProfile?
+  }
+  class CreateChatCommand {
+    - name : string
+    - creatorUserId : Guid
+  }
+  class PostMessageCommand {
+    - chatId : Guid
+    - authorUserId : Guid
+    - text : string
+  }
+  class ChatApplicationService {
+    + CreateChat(command) : ChatId
+    + JoinUser(chatId, userId)
+    + PostMessage(command)
+    + GetHistory(chatId, userId, from, count)
+  }
+}
+
+package "Domain" {
+  class Chat
+  class DomainEvent
+}
+
+package "Infrastructure" {
+  class "ChatRepository" as ChatRepoConcrete {
+    - db : ChatDbContext
+  }
+  class "UserRepository" as UserRepoConcrete {
+    - db : ChatDbContext
+  }
+  class "EfUnitOfWork" as EfUoW {
+    - db : ChatDbContext
+  }
+  class "ChatDbContext" as DbCtx {
+    - DbSet<Chat> Chats
+    - DbSet<User> Users
+  }
+  class "UserServiceHttpClient" as UserHttpClient {
+    - http : HttpClient
+  }
+  interface IUserServiceClientPort <<interface>>
+}
+
+ChatApplicationService --> IChatRepo
+ChatApplicationService --> IUserRepo
+ChatApplicationService --> IUnitOfWork
+ChatApplicationService --> IUserClient
+ChatApplicationService ..> Chat : uses
+ChatApplicationService ..> DomainEvent
+CreateChatCommand ..> ChatApplicationService
+PostMessageCommand ..> ChatApplicationService
+
+ChatRepoConcrete ..|> IChatRepo
+UserRepoConcrete ..|> IUserRepo
+EfUoW ..|> IUnitOfWork
+ChatRepoConcrete --> DbCtx
+UserRepoConcrete --> DbCtx
+EfUoW --> DbCtx
+UserHttpClient ..|> IUserClient
+ChatApplicationService --> CreateChatCommand
+
+@enduml

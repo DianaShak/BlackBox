@@ -1,0 +1,41 @@
+@startuml
+' Схема взаимодействия (блок-схема основных потоков консольного чата)
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName Arial
+title Схема взаимодействия консольного чата
+
+start
+:Регистрация / Вход в систему;
+
+repeat
+  :Главное меню;
+  switch (Что сделать?)
+  case (Создать чат)
+    :Ввести название чата;
+    :Указать участников;
+    :ChatService создаёт чат (owner = текущий юзер);
+    -> "Chat";
+  case (Вступить в чат)
+    :Выбрать чат по id / приглашению;
+    :Добавить пользователя в chat_members;
+    -> "Chat";
+  case (Открыть чат)
+    :Загрузить историю сообщений (GET history);
+    fork
+      :Читать сообщения;
+    fork again
+      :Отправлять сообщения (POST message);
+      :Доставка подписчикам (push через SignalR);
+    end fork
+    -> "Главное меню";
+  case (Управление ролями)
+    :Изменить роль участника (ADMIN/OWNER);
+    -> "Главное меню";
+  case (Выход)
+    stop
+  endswitch
+repeat while (Продолжить работу?)
+stop
+
+@enduml

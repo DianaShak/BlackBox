@@ -1,0 +1,36 @@
+@startuml
+' Архитектурная блок-схема: блоки компонентов и стрелки взаимодействия
+skinparam backgroundcolor white
+skinparam shadowing false
+skinparam nodeBackgroundColor #EAF2FB
+skinparam nodeBorderColor #2E62A6
+skinparam defaultFontName Arial
+skinparam activityFontColor black
+title Архитектура: блоки и взаимодействия
+
+' === Блоки (компоненты) ===
+rectangle "ConsoleClient\n(консольный клиент)" as CLIENT
+
+rectangle "API Gateway\n(единая точка входа)" as GW
+
+rectangle "UserService\n(микросервис: аутентификация\nи профили)" as US
+
+rectangle "ChatService\n(микросервис: чаты, участники,\nсообщения, realtime)" as CS
+
+rectangle "PostgreSQL\n(единая общая БД)" as DB
+
+' === Стрелки взаимодействия ===
+CLIENT -down-> GW : "REST / WSS (HTTPS)"
+
+GW -down-> US : "регистрация, вход (login)"
+GW -down-> CS : "команды чата\n(create, join, post, history)"
+
+CS -right-> US : "HTTP (синхронные вызовы: профили\nпользователей)"
+US -left-> CS : "HTTP (ответы)"
+
+US -down-> DB : "SQL (порт 5432)"
+CS -down-> DB : "SQL (порт 5432)"
+
+CS -right-> CLIENT : "push новых сообщений (SignalR)"
+
+@enduml

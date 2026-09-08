@@ -1,0 +1,56 @@
+@startuml
+' Компонентная диаграмма микросервисов
+skinparam componentStyle rectangle
+skinparam shadowing false
+title Компонентная диаграмма (микросервисы)
+
+package "Клиент (Client)" {
+  component "ConsoleClient" as CC
+}
+
+package "API Gateway" {
+  component "Gateway (ASP.NET Core)" as GW
+}
+
+package "ChatService (микросервис)" {
+  component "REST Controller (SignalR)" as REST
+  component "ChatApplicationService" as APP
+  component "Domain (Chat)" as DOM
+  component "ChatRepository (EF)" as REPO
+  component "WebSocketHub" as WSHUB
+}
+
+package "UserService (микросервис)" {
+  component "AuthController" as AUTH
+  component "UserApplicationService" as UAPP
+  component "UserRepository (EF)" as UREPO
+}
+
+package "База данных (общая)" {
+  database "PostgreSQL\n(единая БД)" as PGC
+}
+
+' Потоки команд
+CC --> GW : "REST/SignalR (HTTPS/WSS)"
+GW --> REST : "команды чата"
+GW --> AUTH : "регистрация/логин"
+
+' Синхронное взаимодействие между сервисами (HTTP)
+REST <--> UAPP : "HTTP (синхронные вызовы)"
+
+' Внутри ChatService
+REST --> APP : "команды"
+WSHUB --> APP
+APP --> DOM
+DOM --> REPO
+REPO --> PGC : "SQL (порт 5432)"
+
+' Внутри UserService
+AUTH --> UAPP
+UAPP --> UREPO
+UREPO --> PGC : "SQL (порт 5432)"
+
+' Push
+WSHUB --> CC : "push (SignalR/WebSocket)"
+
+@enduml

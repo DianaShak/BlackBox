@@ -1,0 +1,38 @@
+@startuml
+' Диаграмма последовательности: отправка сообщения в чат
+actor "Пользователь A" as U
+participant "ConsoleClient" as C
+participant "Gateway" as GW
+participant "ChatController" as CTRL
+participant "ChatApplicationService" as APP
+participant "ChatRepository" as REPO
+participant "ChatDbContext" as DB
+participant "WebSocketHub" as HUB
+participant "Пользователь B" as UB
+
+title Диаграмма последовательности — отправка сообщения
+
+U -> C : ввести сообщение
+C -> GW : POST /api/chats/{id}/messages
+GW -> CTRL : PostMessageCommand
+CTRL -> APP : PostMessage(command)
+activate APP
+APP -> REPO : GetById(chatId)
+REPO -> DB : SELECT chat + members
+DB --> REPO : chat aggregate
+REPO --> APP : Chat
+APP -> APP : chat.PostMessage(author, text)
+APP -> APP : collect DomainEvents
+APP -> REPO : Save(chat)
+REPO -> DB : UPDATE messages
+APP -> HUB : NotifyMessagePosted(viewMessage)
+activate HUB
+HUB --> UB : push (SignalR)
+deactivate HUB
+APP --> CTRL : ChatId
+CTRL --> GW : 200 Ok
+GW --> C : 200 Ok
+C -> UB : сообщение отображается в консоли
+deactivate APP
+
+@enduml

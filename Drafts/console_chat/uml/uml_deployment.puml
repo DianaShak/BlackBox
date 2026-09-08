@@ -1,0 +1,37 @@
+@startuml
+' Диаграмма развёртывания (деплоймент)
+skinparam nodeStyle rectangle
+skinparam shadowing false
+title Диаграмма развёртывания (Deployment)
+
+node "Компьютер пользователя" as PC {
+  component "ConsoleClient\n(.NET)" as CONS
+}
+
+node "Сервер приложений" as SRV {
+  component "API Gateway" as GW
+  node "ChatService" as CS {
+    component "REST/SignalR\n(ASP.NET Core)" as REST
+    component "ChatApplicationService" as APP
+    component "ChatRepository\n(EF Core)" as REPO
+    component "WebSocketHub" as WSHUB
+  }
+  node "UserService" as US {
+    component "Auth/User\n(ASP.NET Core)" as AUTH
+    component "UserApplicationService" as UAPP
+    component "UserRepository\n(EF Core)" as UREPO
+  }
+}
+
+node "Сервер БД" as DBS {
+  database "PostgreSQL\n(единая общая БД)" as PGD
+}
+
+PC -- SRV : "HTTPS / WSS"
+GW --> CS : "запросы чата"
+GW --> US : "запросы авторизации"
+CS <--> US : "синхронный HTTP"
+CS --> DBS : "SQL (5432)"
+US --> DBS : "SQL (5432)"
+
+@enduml

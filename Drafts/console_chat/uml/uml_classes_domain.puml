@@ -1,0 +1,90 @@
+@startuml
+' Контекст чата: диаграмма классов доменной модели (DDD)
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam linetype ortho
+title Контекст чата (ChatContext) — Доменная модель (DDD)
+
+package "Domain (Domain/Chat)" {
+  abstract class AggregateRoot {
+    # id : Guid
+  }
+
+  class Chat {
+    - id : Guid
+    - name : ChatName
+    - ownerId : UserId
+    - members : Set<ChatMember>
+    - messages : List<Message>
+    + AddMember(userId, role)
+    + RemoveMember(userId)
+    + ChangeRole(userId, role)
+    + PostMessage(authorId, text)
+    + ImmutableMembers()
+  }
+
+  class ChatMember {
+    - userId : UserId
+    - role : MemberRole
+    - joinedAt : DateTime
+  }
+
+  class Message {
+    - id : Guid
+    - chatId : ChatId
+    - authorId : UserId
+    - content : string
+    - sentAt : DateTime
+    + ToSummary()
+  }
+
+  enum MemberRole {
+    OWNER
+    ADMIN
+    MEMBER
+  }
+
+  class ChatName {
+    - value : string
+    + Validate()
+  }
+
+  Chat *-- "many" ChatMember
+  Chat *-- "many" Message
+  ChatMember --> MemberRole
+  Chat --> ChatName
+  AggregateRoot <|-- Chat
+}
+
+package "Domain (Domain/Users)" {
+  class User {
+    - id : Guid
+    - username : string
+    - passwordHash : string
+    - profile : UserProfile
+    + Authenticate(password)
+  }
+  class UserProfile {
+    - displayName : string
+    - avatarUrl : string?
+    - about : string?
+  }
+  User *-- UserProfile
+}
+
+package "Domain (Domain/Events)" {
+  abstract class DomainEvent
+  class MessagePosted
+  class MemberJoined
+  class MemberLeft
+  DomainEvent <|-- MessagePosted
+  DomainEvent <|-- MemberJoined
+  DomainEvent <|-- MemberLeft
+}
+
+Chat --> "0..*" DomainEvent : raises
+Message --> ChatName
+Chat --> User : owner
+ChatMember --> User : userId
+
+@enduml
