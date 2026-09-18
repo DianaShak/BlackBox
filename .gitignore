@@ -371,6 +371,17 @@ bld/
 [Ll]ogs/
 *.winmd
 *.gatekeeper.manifest
+**/[Bb]in/
+**/[Oo]bj/
+**/[Dd]ebug/
+**/[Rr]elease/
+**/x64/
+**/x86/
+**/bld/
+**/[Ll]og/
+**/[Ll]ogs/
+**/*.winmd
+**/*.gatekeeper.manifest
 
 # -----------------------------------------------------------------------
 # 2. Специфика JetBrains Rider (Папка .idea и внутренние XML кэши)
@@ -393,6 +404,9 @@ bld/
 .idea/**/dataSources/
 .idea/**/dataSources.local.xml
 .idea/**/sqlDataSources.xml
+
+# Игнорировать папки Rider (.idea) на любом уровне вложенности проекта
+**/.idea/
 
 # -----------------------------------------------------------------------
 # 3. NuGet Пакеты и Кэш зависимостей
