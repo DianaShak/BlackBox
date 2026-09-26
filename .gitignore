@@ -352,3 +352,109 @@ healthchecksdb
 MigrationBackup/
 
 # End of https://www.gitignore.io/api/visualstudio
+
+## =======================================================================
+## ПОЛНЫЙ .GITIGNORE ДЛЯ C# / .NET (JETBRAINS RIDER + VISUAL STUDIO)
+## =======================================================================
+
+# -----------------------------------------------------------------------
+# 1. Выходные файлы компиляции (Сборка, Bin, Obj)
+# -----------------------------------------------------------------------
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+bld/
+[Ll]og/
+[Ll]ogs/
+*.winmd
+*.gatekeeper.manifest
+
+# -----------------------------------------------------------------------
+# 2. Специфика JetBrains Rider (Папка .idea и внутренние XML кэши)
+# -----------------------------------------------------------------------
+.idea/
+*.sln.iml
+*.suo
+*.user
+*.sln.docstates
+*.orig
+
+# Игнорируем персональные кэши навигации, истории и вкладок внутри .idea
+.idea/**/workspace.xml
+.idea/**/tasks.xml
+.idea/**/usage.statistics.xml
+.idea/**/dictionaries
+.idea/**/shelf
+.idea/**/contentModel.xml
+.idea/**/modules.xml
+.idea/**/dataSources/
+.idea/**/dataSources.local.xml
+.idea/**/sqlDataSources.xml
+
+# -----------------------------------------------------------------------
+# 3. NuGet Пакеты и Кэш зависимостей
+# -----------------------------------------------------------------------
+*.nupkg
+*.snupkg
+# Настройки локальных пакетов
+packages/
+!packages/repositories.config
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# -----------------------------------------------------------------------
+# 4. Специфика Visual Studio и инструментов Microsoft
+# -----------------------------------------------------------------------
+.vs/
+*.userosscache
+*.suo
+*.user
+*.sln.docstates
+*.suo
+*.cache
+*.com.microsoft.visualstudio.editor.performance.dat
+Breakpointsv2.json
+
+# -----------------------------------------------------------------------
+# 5. Результаты тестов и анализаторы кода
+# -----------------------------------------------------------------------
+*.trx
+*.md.html
+TestResult.xml
+TestResults/
+[Tt]est[Rr]esult*/
+.analyzers/
+.sourcelink/
+
+# Инструменты JetBrains (ReSharper / dotCover / dotTrace)
+_ReSharper*/
+*.[Rr]e[Ss]harper.user
+*.dotCover
+_TeamCity*
+
+# -----------------------------------------------------------------------
+# 6. Локальные секреты, настройки окружения и БД
+# -----------------------------------------------------------------------
+appsettings.Development.json
+appsettings.local.json
+*.secrets.json
+*.env
+*.env.*
+!.env.example
+
+# Локальные базы данных (если создаются при тестах)
+*.mdf
+*.ldf
+*.db
+*.sqlite
+
+# -----------------------------------------------------------------------
+# 7. Системный мусор ОС
+# -----------------------------------------------------------------------
+.DS_Store
+Thumbs.db
+desktop.ini
