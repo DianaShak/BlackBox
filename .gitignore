@@ -372,6 +372,7 @@ bld/
 *.winmd
 *.gatekeeper.manifest
 **/[Bb]in/
+
 **/[Oo]bj/
 **/[Dd]ebug/
 **/[Rr]elease/
@@ -472,3 +473,5 @@ appsettings.local.json
 .DS_Store
 Thumbs.db
 desktop.ini
+
+
