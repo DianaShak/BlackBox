@@ -1,0 +1,38 @@
+@startuml
+
+' ER-диаграмма базы данных Logger Service (PostgreSQL)
+
+hide circle
+
+skinparam linetype ortho
+title ER-диаграмма Logger Service (PostgreSQL: схема logger)
+
+package "Схема logger (владелец: LoggerService)" {
+
+entity "logs" as l {
+
+* id : uuid PK
+
+--
+
+event_id : uuid UNIQUE
+
+occurred_at : timestamptz
+
+service_name : varchar(100)
+
+level : varchar(20)
+
+message : varchar(4000)
+
+user_id : varchar(100)
+
+metadata : jsonb
+
+created_at : timestamptz
+
+}
+
+}
+
+@enduml
