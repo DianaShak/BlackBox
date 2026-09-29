@@ -1,16 +1,16 @@
 ﻿namespace Domain.Entities.Entities;
 
-public class Chat
+public class Chat : IEntity<Guid>
 {
-    public Guid ChatId { get; }
+    public Guid Id { get; set; }
 
-    public string Name { get; }
+    public string Name { get; set; }
 
-    public Guid OwnerId { get; }
+    public Guid OwnerId { get; set; }
 
-    public DateTime CreatedAt { get; }
+    public DateTime CreatedAt { get; set; }
 
-    public List<ChatMember> Members { get; }
+    public List<ChatMember> Members { get; set; }
 
-    public List<Message> Messages { get; }
+    public List<Message> Messages { get; set; }
 }

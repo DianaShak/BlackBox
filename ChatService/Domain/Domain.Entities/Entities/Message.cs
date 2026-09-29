@@ -1,16 +1,16 @@
 ﻿namespace Domain.Entities.Entities;
 
-public class Message
+public class Message : IEntity<Guid>
 {
     public const int MaxContentLength = 2000;
 
-    public Guid MessageId { get; }
+    public Guid Id { get; set; }
 
-    public Guid ChatId { get; }
+    public Guid ChatId { get; set; }
 
-    public Guid AuthorId { get; }
+    public Guid AuthorId { get; set; }
 
-    public string Content { get; }
+    public string Content { get; set; }
 
-    public DateTime SentAt { get; }
+    public DateTime SentAt { get; set; }
 }
