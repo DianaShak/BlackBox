@@ -1,0 +1,42 @@
+// ChatService — Domain.Entities
+// Проект: git_repo\BlackBox\ChatService\Domain\Domain.Entities
+// Формат DBML (https://dbdiagram.io) — вставьте код в редактор на dbdiagram.io
+
+Table users {
+  Id uuid [pk]
+  Login varchar [note: 'Логин']
+  PasswordHash varchar [note: 'Хеш пароля']
+  Status varchar [note: 'Статус пользователя']
+  UserRole smallint [note: 'MemberRole: 0=Owner, 1=Admin, 2=Member']
+
+  Note: 'Пользователи. Не реализует IEntity<Guid>, поля только для чтения (private set)'
+}
+
+Table chats {
+  Id uuid [pk]
+  Name varchar [note: 'Название чата']
+  OwnerId uuid [ref: > users.Id, note: 'Владелец чата']
+  CreatedAt timestamp [note: 'Дата создания']
+
+  Note: 'Чаты. Навигация: Members (List<ChatMember>), Messages (List<Message>)'
+}
+
+Table chat_members {
+  Id uuid [pk]
+  ChatId uuid [ref: > chats.Id, note: 'Чат']
+  UserId uuid [ref: > users.Id, note: 'Пользователь']
+  Role smallint [note: 'MemberRole: 0=Owner, 1=Admin, 2=Member']
+  JoinedAt timestamp [note: 'Дата вступления']
+
+  Note: 'Участник чата. Уникальный индекс (ChatId, UserId) в коде не задан'
+}
+
+Table messages {
+  Id uuid [pk]
+  ChatId uuid [ref: > chats.Id, note: 'Чат']
+  AuthorId uuid [ref: > users.Id, note: 'Автор']
+  Content varchar [note: 'Текст сообщения, макс. 2000 (Message.MaxContentLength)']
+  SentAt timestamp [note: 'Дата отправки']
+
+  Note: 'Сообщения чата'
+}
