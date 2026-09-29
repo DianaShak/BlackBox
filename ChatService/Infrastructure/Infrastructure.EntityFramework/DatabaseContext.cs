@@ -25,6 +25,11 @@ public class DatabaseContext : DbContext
     /// </summary>
     public DbSet<Message> Messages { get; set; }
 
+    /// <summary>
+    /// Пользователи.
+    /// </summary>
+    public DbSet<User> Users { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
