@@ -10,7 +10,7 @@ public class Message : IEntity<Guid>
 
     public Guid AuthorId { get; set; }
 
-    public string Content { get; set; }
+    public string? Content { get; set; }
 
     public DateTime SentAt { get; set; }
 }

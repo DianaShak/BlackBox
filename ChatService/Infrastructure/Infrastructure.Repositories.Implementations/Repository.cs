@@ -28,7 +28,17 @@ public abstract class Repository<T, TPrimaryKey> : IRepository<T, TPrimaryKey> w
     /// </summary>
     /// <param name="id"> Id сущности. </param>
     /// <returns> Cущность. </returns>
-    public virtual T Get(TPrimaryKey id)
+    public T Get(TPrimaryKey id)
+    {
+        throw new NotImplementedException();
+    }
+
+    /// <summary>
+    /// Получить сущность по ID.
+    /// </summary>
+    /// <param name="id"> Id сущности. </param>
+    /// <returns> Cущность. </returns>
+    public virtual T GetAsync(TPrimaryKey id)
     {
         return _entitySet.Find(id);
     }
