@@ -1,6 +1,7 @@
 @ChatService_HostAddress = http://localhost:5054
 
-GET {{ChatService_HostAddress}}/weatherforecast/
+//GET {{ChatService_HostAddress}}/weatherforecast/
+GET {{ChatService_HostAddress}}/swagger/index.html
 Accept: application/json
 
 ###

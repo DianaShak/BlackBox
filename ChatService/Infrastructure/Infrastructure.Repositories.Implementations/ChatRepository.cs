@@ -8,9 +8,9 @@ using Services.Contracts.Chat;
 
 namespace Infrastructure.Repositories.Implementations;
 
-internal class ChatRepository : Repository<Chat, Guid>, IChatRepository
+public class ChatRepository : Repository<Chat, Guid>, IChatRepository
 {
-    public ChatRepository(DatabaseContext context) : base(context)
+    public ChatRepository(ChatServiceContext context) : base(context)
     {
     }
 

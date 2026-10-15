@@ -4,9 +4,9 @@ using Microsoft.Extensions.Logging;
 
 namespace Infrastructure.EntityFramework;
 
-public class DatabaseContext : DbContext
+public class ChatServiceContext : DbContext
 {
-    public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options)
+    public ChatServiceContext(DbContextOptions<ChatServiceContext> options) : base(options)
     {
     }
 
