@@ -8,6 +8,9 @@ public class LogItem
     //id записи лога
     public int Id { get; }
 
+    //идентификатор для связи событий в цепочку
+    public Guid TraceId { get; }
+
     //уникальный идентификатор события
     public Guid EventId { get; }
 
