@@ -4,9 +4,9 @@ using Microsoft.Extensions.Logging;
 
 namespace Infrastructure.EntityFramework;
 
-public class DatabaseContext : DbContext
+public class ChatServiceContext : DbContext
 {
-    public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options)
+    public ChatServiceContext(DbContextOptions<ChatServiceContext> options) : base(options)
     {
     }
 
@@ -36,8 +36,10 @@ public class DatabaseContext : DbContext
 
         modelBuilder.Entity<Chat>()
             .HasMany(u => u.Messages);
-            //.WithOne(c => c.Course)
+            //.WithOne(c => c. Course)
             //.IsRequired();
+        //modelBuilder.Entity<Message>()
+            //.HasMany
 
         //modelBuilder.Entity<Course>().Property(c => c.Name).HasMaxLength(100);
         //modelBuilder.Entity<Lesson>().Property(c => c.Subject).HasMaxLength(100);
