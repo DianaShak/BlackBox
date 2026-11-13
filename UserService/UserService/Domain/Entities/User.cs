@@ -1,4 +1,8 @@
-﻿using UserService.Domain.Value_Objects;
+﻿using System.Reflection;
+using System.Runtime.CompilerServices;
+using UserService.Domain.Enums;
+using UserService.Domain.Interfaces;
+using UserService.Domain.Value_Objects;
 
 namespace UserService.Domain.Entities;
 
@@ -10,19 +14,27 @@ public class User
     
     public string PasswordHash { get; private set; }
     
-    public string Status { get; private set; }
+    public string DisplayName { get; private set; }
+    
+    public UserStatusEnum Status { get; private set; }
     
     public UserRole UserRole { get; private set; }
-    
-    //  Навигационные свойства
-    public UserProfile Profile { get; private set; }
 
     public List<PasswordRecord> PasswordHistory { get; private set; } = new();
     
-    //  Для EF Core
-    private User() { }
-
-    public static User Register(string login, string passwordHash, string displayName)
+    [Assembly:InternalsVisibleTo("UserService.Infrastructure.Mappings.UserMapping")]
+    internal User(Guid id, string login, string passwordHash, string displayName, UserStatusEnum status, UserRole role, List<PasswordRecord> passwordHistory)
+    {
+        Id = id;
+        Login = login;
+        PasswordHash = passwordHash;
+        DisplayName = displayName;
+        Status = status;
+        UserRole = role;
+        PasswordHistory = passwordHistory;
+    }
+    
+    public static User Register(string login, string password, string displayName, IPasswordHasher passwordHasher)
     {
         if (string.IsNullOrWhiteSpace(login))
         {
@@ -44,26 +56,27 @@ public class User
             throw new ArgumentException("Имя пользователя должно быть не менее 2 символов.");
         }
 
+        if (password.Length < 8) throw new Exception("Пароль слишком короткий");
+        
         var userId = Guid.NewGuid();
+        var passwordHistory = new List<PasswordRecord>();
+        var hashedPassword = passwordHasher.HashPassword(password);
+        
+        var user = new User(
+            userId,
+            login,
+            hashedPassword,
+            displayName,
+            UserStatusEnum.Offline,
+            UserRole.Member,
+            passwordHistory
+            );
 
-        var user = new User
-        {
-            Id = userId,
-            Login = login,
-            PasswordHash = passwordHash,
-            Status = "offline",
-            UserRole = UserRole.Member,
-        };
-
-        user.Profile = UserProfile.CreateDefault(userId, displayName);
-        user.PasswordHistory.Add(new PasswordRecord(passwordHash));
+        user.PasswordHistory.Add(new PasswordRecord(hashedPassword));
 
         return user;
     }
-    //public bool VerifyPassword()
-    //{
-        
-    //}
+
     public void ChangePassword(string newPasswordHash)
     {
         if (string.IsNullOrWhiteSpace(newPasswordHash))
@@ -82,7 +95,7 @@ public class User
     
     public void LogOut()
     {
-        Status = "offline";
+        Status = UserStatusEnum.Offline;
         UserRole = UserRole.Guest;
     }
 }

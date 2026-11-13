@@ -5,8 +5,13 @@ public record PasswordRecord
     public string PasswordHash { get; private set; }
     
     public DateTime ChangedAt { get; private set; }
-    //  Конструктор для EF core
-    private PasswordRecord() { }
+    
+    // Конструктор для маппера
+    internal PasswordRecord(string passwordHash, DateTime changedAt)
+    {
+        PasswordHash = passwordHash;
+        ChangedAt = changedAt;
+    }
 
     public PasswordRecord(string passwordHash)
     {

@@ -4,53 +4,37 @@ namespace UserService.Domain.Entities;
 
 public class UserProfile
 {
-    public Guid Id { get; set; }
+    public Guid Id { get; private set; }
 
-    public Guid UserId { get; set; }
+    public Guid UserId { get; private set; }
 
-    public string DisplayName { get; set; }
+    public string? Bio { get; private set; }
 
-    public string? Bio { get; set; }
+    public DateOnly? BirthDate { get; private set; }
 
-    public DateOnly? BirthDate { get; set; }
+    public DateTime CreatedAt { get; private set; }
 
-    public DateTime CreatedAt { get; set; }
-
-    internal static UserProfile CreateDefault(Guid userId, string displayName)
+    public UserProfile(Guid id, Guid userId, string? bio, DateOnly? birthDate, DateTime createdAt)
     {
-        if (string.IsNullOrWhiteSpace(displayName))
-        {
-            throw new ArgumentNullException("Имя пользователя не может быть пустым.");
-        }
-
-        if (displayName.Length < 2)
-        {
-            throw new ArgumentException("Имя пользователя должно быть не менее 2 символов.");
-        }
-
-        return new UserProfile
-        {
-            Id = Guid.NewGuid(),
-            UserId = userId,
-            DisplayName = displayName,
-            Bio = string.Empty,
-            CreatedAt = DateTime.UtcNow
-        };
+        Id = id;
+        UserId = userId;
+        Bio = bio;
+        BirthDate = birthDate;
+        CreatedAt = createdAt;
     }
 
-    public void Update(string displayName, string bio, DateOnly? birthDate)
+    public static UserProfile CreateDefault(Guid userId)
     {
-        if (string.IsNullOrWhiteSpace(displayName))
-        {
-            throw new ArgumentNullException("Имя не может быть пустым.");
-        }
+        return new UserProfile(Guid.NewGuid(), userId, string.Empty, null, DateTime.UtcNow);
+    }
 
+    public void Update(string bio, DateOnly? birthDate)
+    {
         if (birthDate.HasValue && birthDate.Value > DateOnly.FromDateTime(DateTime.Today))
         {
             throw new ArgumentException("Дата рождения не может быть в будущем.");
         }
 
-        this.DisplayName = displayName;
         this.Bio = bio;
         this.BirthDate = birthDate;
     }
