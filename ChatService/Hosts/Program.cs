@@ -10,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddSwaggerGen();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi(); // TODO Возможно удалить.
+builder.Services.AddOpenApi(); // TODO VS Возможно удалить. Это аналог swagger.
 
 builder.Services.AddDbContext<ChatServiceContext>(
     options =>
@@ -19,6 +19,8 @@ builder.Services.AddDbContext<ChatServiceContext>(
     });
 builder.Services.AddScoped<IChatService, Services.Implementations.ChatService>();
 builder.Services.AddScoped<IChatRepository, Infrastructure.Repositories.Implementations.ChatRepository>();
+
+builder.Services.AddAutoMapper(cfg => { }, typeof(Services.Implementations.ChatService));
 
 var app = builder.Build();
 
@@ -30,7 +32,10 @@ if (app.Environment.IsDevelopment())
 
     // Add OpenAPI 3.0 document serving middleware
     // Available at: http://localhost:<port>/swagger/v1/swagger.json
+    // TODO VS доступен json по адресу
+    // https://localhost:{PORT}/openapi/v1.json.
     app.MapOpenApi();
+    
 }
 
 app.UseHttpsRedirection();
